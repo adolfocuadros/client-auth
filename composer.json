@@ -1,0 +1,20 @@
+{
+    "name": "adolfocuadros/client-auth",
+    "description": "Contiene los middleware necesario para conectarse a un servidor de autenticación y hacer las validaciones respectivas",
+    "type": "package",
+    "require": {
+        "guzzlehttp/guzzle": "~6.0@dev",
+        "laravel/lumen": "~5.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adolfo Cuadros",
+            "email": "ronnie.adolfo@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": { "Adolfocuadros\\ClientAuth\\": "src/" }
+    }
+}
