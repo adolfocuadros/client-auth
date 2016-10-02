@@ -12,7 +12,7 @@ AUTH_API=http://localhost/direcciondelaapi/
 
 ### bootstrap/app.php
 Habilitar este middleware:
-```
+```php
 $app->routeMiddleware([
     'check_session' => Adolfocuadros\ClientAuth\Middleware\CheckSessionMiddleware::class,
 ]);
@@ -21,13 +21,13 @@ $app->routeMiddleware([
 
 Copiar vendor/adolfocuadros/client-auth/config/client_auth.php a config/client_auth.php
 Posteriormente insertar antes de la carga de rutas:
-```
+```php
 $app->configure('client_auth');
 ```
 
 ### ¿Cómo Usarlo?
 #### app/Http/routes.php
-```
+```php
 $app->post('usuarios', [
     'middleware' => 'check_session:usuarios.store',
     'uses' => 'UsuarioController@store'
