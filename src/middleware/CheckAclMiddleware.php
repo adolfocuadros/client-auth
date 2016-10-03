@@ -1,12 +1,12 @@
 <?php
-namespace Adolfocuadros\ClientAuth\Middleware;
+namespace Adolfocuadros\RenqoClientACL\Middleware;
 
 use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 
-Class CheckSessionMiddleware
+Class CheckAclMiddleware
 {
 
     public function handle(Request $request, Closure $next, $permission = null)

@@ -1,6 +1,6 @@
 {
-    "name": "adolfocuadros/client-auth",
-    "description": "Contiene los middleware necesario para conectarse a un servidor de autenticación y hacer las validaciones respectivas",
+    "name": "adolfocuadros/renqo-client-acl",
+    "description": "Contiene las herramientas necesarias para conectarse a un servidor ACL RENQO",
     "type": "package",
     "require": {
         "guzzlehttp/guzzle": "~6.0@dev"
@@ -14,6 +14,6 @@
     ],
     "minimum-stability": "dev",
     "autoload": {
-        "psr-4": { "Adolfocuadros\\ClientAuth\\": "src/" }
+        "psr-4": { "Adolfocuadros\\RenqoClientACL\\": "src/" }
     }
 }

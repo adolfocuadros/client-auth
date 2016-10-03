@@ -1,42 +1,44 @@
-# PASOS PARA LA INSTALACIÓN
+#Renqo Client ACL
+**Renqo Client ACL** Es una herramienta para conectarse a un servidor ACL RENQO el cual le permitirá fácilmente el manejo
+de privilegios y roles en el sistema.
+
+## PASOS PARA LA INSTALACIÓN
 
 Probado en Lumen 5.3
 
-### Lumen: Copiar vendor/adolfocuadros/client-auth/config/client_auth.php a config/client_auth.php
+### Lumen: Copiar vendor/adolfocuadros/client-auth/config/renqo_client_acl.php a config/renqo_client_acl.php
 
-### .env
-Agregar
+##Archivos a modificar
+
+### config/renqo_client_acl.php
+Modificar:
+```php
+    'api_auth'      =>  'hrrp;//renqoserver.com',
+    'server_token'  => ''
 ```
-AUTH_API=http://localhost/direcciondelaapi/
-```
+
 
 ### bootstrap/app.php
 Habilitar este middleware:
 ```php
 $app->routeMiddleware([
-    'check_session' => Adolfocuadros\ClientAuth\Middleware\CheckSessionMiddleware::class,
+    'acl' => Adolfocuadros\RenqoClientACL\Middleware\CheckAclMiddleware::class,
 ]);
-```
-
-
-Copiar vendor/adolfocuadros/client-auth/config/client_auth.php a config/client_auth.php
-Posteriormente insertar antes de la carga de rutas:
-```php
-$app->configure('client_auth');
 ```
 
 ### ¿Cómo Usarlo?
 #### app/Http/routes.php
 ```php
 $app->post('usuarios', [
-    'middleware' => 'check_session:usuarios.store',
+    'middleware' => 'acl:usuarios.store',
     'uses' => 'UsuarioController@store'
 ]);
 ```
-Notar que **check_session:usuarios.store** validará los permisos 
+Notar que **acl:usuarios.store** validará los permisos
 "usuarios.store" conjuntamente con la session, la respuesta será HTTP 200
 si todo es correcto o 40x en caso haya problemas.
 
+Respuestas
 En caso de Error HTTP 401
 ```json
 {"error":"No tiene los permisos suficientes."}
