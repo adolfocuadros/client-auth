@@ -1,9 +1,9 @@
 <?php
 namespace Adolfocuadros\RenqoClientACL\Middleware;
 
+use Adolfocuadros\RenqoClientACL\Exceptions\ConfigException;
 use Closure;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 
 Class CheckAclMiddleware
@@ -11,19 +11,22 @@ Class CheckAclMiddleware
 
     public function handle(Request $request, Closure $next, $permission = null)
     {
-        if(!isset(getallheaders()['Auth-Token'])) {
+        if(!$request->hasHeader('Auth-Token')) {
             return response()->json(['error' => 'Acceso denegado'], 401);
+        }
+        if(empty(config('renqo_client_acl.api_auth'))) {
+            throw new ConfigException('Hay un problema con la configuración api_auth');
         }
         try {
             $client = new Client([
-                'base_uri' =>  config('client_auth.api'),
+                'base_uri' =>  config('renqo_client_acl.api_auth'),
                 'timeout'  => 2.0,
                 'headers'  => [
-                    'Auth-Token' => getallheaders()['Auth-Token']
+                    'Auth-Token' => $request->header('Auth-Token')
                 ]
             ]);
 
-            $client->request('POST', 'session',[
+            $client->request('POST', 'acl',[
                 'form_params'    =>  ['permission'=>$permission]
             ]);
         } catch (\Exception $e) {

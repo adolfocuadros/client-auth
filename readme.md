@@ -1,5 +1,5 @@
 #Renqo Client ACL
-**Renqo Client ACL** Es una herramienta para conectarse a un servidor ACL RENQO el cual le permitirá fácilmente el manejo
+**Renqo Client ACL** Es una herramienta para conectarse a un servidor **RENQO ACL** el cual le permitirá fácilmente el manejo
 de privilegios y roles en el sistema.
 
 ## PASOS PARA LA INSTALACIÓN
@@ -13,7 +13,7 @@ Probado en Lumen 5.3
 ### config/renqo_client_acl.php
 Modificar:
 ```php
-    'api_auth'      =>  'hrrp;//renqoserver.com',
+    'api_auth'      =>  'http//renqoserver.com',
     'server_token'  => ''
 ```
 
@@ -21,9 +21,17 @@ Modificar:
 ### bootstrap/app.php
 Habilitar este middleware:
 ```php
+...
 $app->routeMiddleware([
     'acl' => Adolfocuadros\RenqoClientACL\Middleware\CheckAclMiddleware::class,
 ]);
+```
+
+Antes de cargar las rutas:
+```php
+...
+$app->configure('renqo_client_acl');
+...
 ```
 
 ### ¿Cómo Usarlo?
