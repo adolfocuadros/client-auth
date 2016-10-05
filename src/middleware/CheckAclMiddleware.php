@@ -14,12 +14,12 @@ Class CheckAclMiddleware
         if(!$request->hasHeader('Auth-Token')) {
             return response()->json(['error' => 'Acceso denegado'], 401);
         }
-        if(empty(config('renqo_client_acl.api_auth'))) {
+        if(empty(config('renqo_client_acl.renqo_acl'))) {
             throw new ConfigException('Hay un problema con la configuración api_auth');
         }
         try {
             $client = new Client([
-                'base_uri' =>  config('renqo_client_acl.api_auth'),
+                'base_uri' =>  config('renqo_client_acl.renqo_acl'),
                 'timeout'  => 2.0,
                 'headers'  => [
                     'Auth-Token' => $request->header('Auth-Token')

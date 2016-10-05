@@ -13,7 +13,8 @@ Probado en Lumen 5.3
 ### config/renqo_client_acl.php
 Modificar:
 ```php
-    'api_auth'      =>  'http//renqoserver.com',
+//Server of Renqo ACL server
+    'renqo_acl'      =>  env('RENQO_ACL','http://url-renqo-acl'),
     'server_token'  => ''
 ```
 
