@@ -1,12 +1,34 @@
-#Renqo Client ACL
+# Renqo Client ACL
 **Renqo Client ACL** Es una herramienta para conectarse a un servidor **RENQO ACL** el cual le permitirá fácilmente el manejo
 de privilegios y roles en el sistema.
 
 ## PASOS PARA LA INSTALACIÓN
 
-Probado en Lumen 5.3
+Instalar mediante Composer:
+```cmd
+composer require adolfocuadros/renqo-client-acl
+```
 
-### Lumen: Copiar vendor/adolfocuadros/client-auth/config/renqo_client_acl.php a config/renqo_client_acl.php
+### Laravel config/app.php
+Agregar Como proveedor de Servicio:
+```php
+'providers' = [
+    //Otros Proveedores de servicio
+    //
+    Adolfocuadros\RenqoClientACL\AclServiceProvider::class,
+],
+```
+
+### Publicar Configuración
+Laravel artisan:
+```cmd
+php artisan vendor:publish --tag=config
+```
+
+Lumen: En caso de no existir carpeta de configuración, crearla:
+```
+vendor/adolfocuadros/client-auth/config/renqo_client_acl.php -> config/renqo_client_acl.php
+```
 
 ##Archivos a modificar
 
@@ -14,25 +36,79 @@ Probado en Lumen 5.3
 Modificar:
 ```php
 //Server of Renqo ACL server
-    'renqo_acl'      =>  env('RENQO_ACL','http://url-renqo-acl'),
+    'renqo_acl'     => 'http://url-to-renqo.com',
     'server_token'  => ''
 ```
 
 
-### bootstrap/app.php
-Habilitar este middleware:
+### Registrar Middleware
+Lumen: dentro de bootstrap/app.php
 ```php
 ...
 $app->routeMiddleware([
+    //Otros Middleware
+    
     'acl' => Adolfocuadros\RenqoClientACL\Middleware\CheckAclMiddleware::class,
 ]);
-```
 
-Antes de cargar las rutas:
-```php
-...
+
+//Antes de cargar las rutas
 $app->configure('renqo_client_acl');
 ...
+```
+
+###Configuración de Autenticación (Sólo Laravel)
+En caso de que desee usar el servidor de autenticación y ACL RENQO ACL
+
+Abrir el archivo config/auth.php y modificar las siguientes lineas
+```php
+'guards' => [
+        'web' => [
+            'driver' => 'session',
+            //'provider' => 'users',
+            'provider' => 'renqo-acl'
+        ],
+
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+        ],
+    ],
+    
+    //
+    // Otras Configuraciones
+    //
+    
+//Agregar un nuevo proveedor
+'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\User::class,
+        ],
+
+        //RENQOACL
+        'renqo-acl' => [
+            'driver' => 'renqo',
+        ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
+```
+
+Posteriormente Registrar el Proveedor de Servicio **renqo-acl**, abrir
+el archivo **app/Providers/AuthServiceProvider**.
+```php
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        \Auth::provider('renqo', function ($app, array $config) {
+            return new \Adolfocuadros\RenqoClientACL\AuthUserProvider($config);
+        });
+    }
 ```
 
 ### ¿Cómo Usarlo?

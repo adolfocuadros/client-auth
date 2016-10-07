@@ -1,6 +1,6 @@
 <?php
 return [
     //Server of Renqo ACL server
-    'api_auth'      =>  'hrrp;//renqoserver.com',
+    'renqo_acl'      => 'http://url-to-renqo.com',
     'server_token'  => ''
 ];
