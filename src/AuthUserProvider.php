@@ -5,12 +5,8 @@ namespace Adolfocuadros\RenqoClientACL;
 use Adolfocuadros\RenqoClientACL\Auth\User;
 use Adolfocuadros\RenqoClientACL\Microservices\RenqoACLServer;
 use Adolfocuadros\RenqoMicroservice\Exceptions\MicroserviceRequestException;
-use Adolfocuadros\RenqoMicroservice\Factory\RequestFactory;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 
 class AuthUserProvider implements UserProvider
 {
@@ -23,7 +19,11 @@ class AuthUserProvider implements UserProvider
 
     public function retrieveById($identifier)
     {
-        return 'es esto';
+        //dd(\Session::get('user_raw'));
+        if(!\Session::has('user_raw')) {
+            return null;
+        }
+        return new User(\Session::get('user_raw'));
     }
 
     public function retrieveByToken($identifier, $token)
@@ -54,7 +54,11 @@ class AuthUserProvider implements UserProvider
             //dd($e->getRealMessage());
             return false;
         }
-        $user->setRenqoToken($response->toArray()->token);
+        $token = $response->toObject()->token;
+
+        \Session::set('renqo_token',$token);
+        \Session::set('user_raw', get_object_vars($user));
+        $user->setRenqoToken($token);
         //dd($response->getContent());
         return true;
     }

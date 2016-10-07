@@ -7,18 +7,18 @@ use Illuminate\Contracts\Auth\Authenticatable;
 class User implements Authenticatable
 {
     public $usuario;
-    public $id;
+    public $_id;
     public $nombre;
     public $nivel;
     public $password;
     public $renqo_token;
 
-    function __construct($res)
+    function __construct(array $res)
     {
-        $this->id = $res->_id;
-        $this->nombre = $res->nombre;
-        $this->usuario = $res->usuario;
-        $this->nivel = $res->nivel;
+        $this->_id = $res['_id'];
+        $this->nombre = $res['nombre'];
+        $this->usuario = $res['usuario'];
+        $this->nivel = $res['nivel'];
     }
 
     /**
@@ -28,7 +28,7 @@ class User implements Authenticatable
      */
     public function getAuthIdentifierName()
     {
-        return $this->id;
+        return $this->_id;
     }
 
     /**
@@ -48,7 +48,7 @@ class User implements Authenticatable
      */
     public function getAuthPassword()
     {
-        return 'secreto';
+        return $this->password;
     }
 
     /**
