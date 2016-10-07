@@ -3,7 +3,8 @@
     "description": "Contiene las herramientas necesarias para conectarse a un servidor ACL RENQO",
     "type": "package",
     "require": {
-        "guzzlehttp/guzzle": "~6.0@dev"
+        "guzzlehttp/guzzle": "~6.0@dev",
+        "adolfocuadros/renqo-microservice": "dev-master"
     },
     "license": "MIT",
     "authors": [
