@@ -21,7 +21,7 @@ class User implements Authenticatable
         $this->nombre = $res['nombre'];
         $this->usuario = $res['usuario'];
         $this->nivel = $res['nivel'];
-        $this->renqo_token = $res['renqo_token'];
+        $this->renqo_token = isset($res['renqo_token'])?:'';
         $configSession = config('renqo_client_acl.driver', 'cloud');
         if(isset($res['permisos']) && $configSession == 'session') {
             $this->permisos = $res['permisos'];
