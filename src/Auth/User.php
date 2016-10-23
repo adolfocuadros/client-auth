@@ -12,13 +12,20 @@ class User implements Authenticatable
     public $nivel;
     public $password;
     public $renqo_token;
+    public $permisos;
 
     function __construct(array $res)
     {
+        //dd($res);
         $this->_id = $res['_id'];
         $this->nombre = $res['nombre'];
         $this->usuario = $res['usuario'];
         $this->nivel = $res['nivel'];
+        $this->renqo_token = $res['renqo_token'];
+        $configSession = config('renqo_client_acl.driver', 'cloud');
+        if(isset($res['permisos']) && $configSession == 'session') {
+            $this->permisos = $res['permisos'];
+        }
     }
 
     /**
@@ -28,7 +35,7 @@ class User implements Authenticatable
      */
     public function getAuthIdentifierName()
     {
-        return $this->_id;
+        return $this->usuario;
     }
 
     /**
@@ -38,7 +45,7 @@ class User implements Authenticatable
      */
     public function getAuthIdentifier()
     {
-        return $this->usuario;
+        return $this->_id;
     }
 
     /**
@@ -84,5 +91,9 @@ class User implements Authenticatable
 
     public function setRenqoToken($renqo_token) {
         $this->renqo_token = $renqo_token;
+    }
+
+    public function setPermisos($permisos) {
+        $this->permisos = $permisos;
     }
 }

@@ -11,8 +11,31 @@ Class CheckAclMiddleware
 
     public function handle(Request $request, Closure $next, $permission = null)
     {
+        $configSession = config('renqo_client_acl.driver','cloud');
+        if($configSession == 'session') {
+
+            $usuario_permisos = \Auth::user()->permisos;
+
+            if(!is_array($usuario_permisos) && $usuario_permisos == '*') {
+                return $next($request);
+            }
+
+            $app_permisos = explode('.',$permission);
+            $niveles = count($app_permisos);
+
+            foreach ($usuario_permisos as $permiso) {
+                for($i = 0; $i < $niveles; $i++) {
+                    if($permiso == $app_permisos[$i].'.*' || $permiso == $app_permisos[$i]) {
+                        return $next($request);
+                    }
+                }
+            }
+
+            abort(401, 'acceso denegado');
+        }
+        
         if(!$request->hasHeader('Auth-Token')) {
-            return response()->json(['error' => 'Acceso denegado'], 401);
+            abort(401, 'acceso denegado');
         }
         if(empty(config('renqo_client_acl.renqo_acl'))) {
             throw new ConfigException('Hay un problema con la configuración api_auth');
@@ -31,11 +54,11 @@ Class CheckAclMiddleware
             ]);
         } catch (\Exception $e) {
             if($e->getCode() == 401) {
-                return response()->json(['error' => 'Acceso denegado'], 401);
+                abort(401, 'acceso denegado');
             } elseif($e->getCode() == 0) {
-                return response()->json(['error' => 'Ha ocurrido un error con el servicio, inténtelo luego.'], 500);
+                abort(500, 'Error en el sistema');
             } else {
-                return response()->json(['error' => 'ha ocurrido un error: '.$e->getCode()], $e->getCode());
+                abort($e->getCode(), 'Ha ocurrido un error');
             }
         }
         return $next($request);

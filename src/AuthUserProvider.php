@@ -54,12 +54,12 @@ class AuthUserProvider implements UserProvider
             //dd($e->getRealMessage());
             return false;
         }
-        $token = $response->toObject()->token;
-
+        $rsp = $response->toObject();
+        $token = $rsp->token;
+        $user->setRenqoToken($token);
+        $user->setPermisos($rsp->usuario->permisos);
         \Session::set('renqo_token',$token);
         \Session::set('user_raw', get_object_vars($user));
-        $user->setRenqoToken($token);
-        //dd($response->getContent());
         return true;
     }
 }
