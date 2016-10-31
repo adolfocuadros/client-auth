@@ -31,7 +31,7 @@ Class CheckAclMiddleware
                 }
             }
 
-            abort(401, 'acceso denegado');
+            abort(401, 'acceso denegado: '.$permission);
         }
         
         if(!$request->hasHeader('Auth-Token')) {
@@ -43,7 +43,7 @@ Class CheckAclMiddleware
         try {
             $client = new Client([
                 'base_uri' =>  config('renqo_client_acl.renqo_acl'),
-                'timeout'  => 2.0,
+                'timeout'  => 20.0,
                 'headers'  => [
                     'Auth-Token' => $request->header('Auth-Token')
                 ]
@@ -54,7 +54,7 @@ Class CheckAclMiddleware
             ]);
         } catch (\Exception $e) {
             if($e->getCode() == 401) {
-                abort(401, 'acceso denegado');
+                abort(401, $e->getMessage());
             } elseif($e->getCode() == 0) {
                 abort(500, 'Error en el sistema');
             } else {
