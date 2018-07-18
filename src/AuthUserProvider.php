@@ -19,11 +19,11 @@ class AuthUserProvider implements UserProvider
 
     public function retrieveById($identifier)
     {
-        //dd(\Session::get('user_raw'));
-        if(!\Session::has('user_raw')) {
+        //dd(session()->get('user_raw'));
+        if(!session()->has('user_raw')) {
             return null;
         }
-        return new User(\Session::get('user_raw'));
+        return new User(session('user_raw'));
     }
 
     public function retrieveByToken($identifier, $token)
@@ -58,8 +58,8 @@ class AuthUserProvider implements UserProvider
         $token = $rsp->token;
         $user->setRenqoToken($token);
         $user->setPermisos($rsp->usuario->permisos);
-        \Session::set('renqo_token',$token);
-        \Session::set('user_raw', get_object_vars($user));
+        session(['renqo_token' => $token]);
+        session(['user_raw' => get_object_vars($user)]);
         return true;
     }
 }
